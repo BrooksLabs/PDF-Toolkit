@@ -1,26 +1,51 @@
-# PDF-Toolkit
-PDF Toolkit — PDF ⇄ Image Converter with OCR
 
-🚀 Features
-PDF → PNG (Zipped)
+# HRWinFormsApp — WinForms .NET 8 (Option B: Enhanced Template)
 
-Converts each page of a PDF into a high‑resolution PNG.
-Adjustable render scale for image quality.
-Automatically bundles output into a compressed ZIP.
+This is a ready-to-build WinForms project targeting **.NET 8** with modern **Dependency Injection**, **Serilog logging**, a **typed settings service**, and an example **async background worker**.
 
-Images → Searchable PDF (OCR)
+## Structure
 
-Combine one or more images into a single PDF.
-Runs OCR locally in the browser (Tesseract.js).
-Invisible text overlays preserve original images while enabling full search/select.
+```
+WinForms_OptionB/
+  HRWinFormsApp.sln
+  src/HRWinFormsApp/
+    HRWinFormsApp.csproj
+    Program.cs
+    appsettings.json
+    Services/
+      AppSettings.cs
+      ISettingsService.cs
+      SettingsService.cs
+      IBackgroundWorker.cs
+      BackgroundWorkerService.cs
+    Forms/
+      MainForm.cs
+      MainForm.Designer.cs
+      AboutForm.cs
+      AboutForm.Designer.cs
+    Assets/
+      (place icons/resources here)
+    Properties/
+```
 
-🛠 Tech Stack
-HTML/JS (Vanilla JavaScript)
-TailwindCSS for layout and UI components
-PDF.js for PDF rendering
-JSZip for ZIP archive generation
-pdf-lib for PDF creation & manipulation
-Tesseract.js for OCR processing
+## Build & Run
 
-📦 Installation
-No installation required.
+1. Open the solution in **Visual Studio 2022+** or run from CLI:
+   ```bash
+   dotnet restore
+   dotnet build
+   dotnet run --project src/HRWinFormsApp/HRWinFormsApp.csproj
+   ```
+2. Logs are written to `Logs/app-<date>.log` in the working directory.
+3. Update `appsettings.json` to change the app name, environment, or theme.
+
+## Notes
+- The `ApplicationConfiguration.Initialize()` replacement ensures high DPI, visual styles, and compatible text rendering.
+- DI registers services and forms; `MainForm` is resolved from the container.
+- `BackgroundWorkerService` showcases safe async work with `IProgress<int>` posting back to the UI thread.
+- `AboutForm` demonstrates consuming settings via DI.
+
+## Customize
+- Add icons to `Assets/` and set via `Form.Icon` or project properties.
+- Add more services and register them in `Program.cs`.
+- Switch logging sinks by adjusting the Serilog configuration in `Program.cs`.
