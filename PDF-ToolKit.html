@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>PDF ⇄ Images with OCR Toolkit</title>
+  <title>Ultimate PDF Toolkit</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 
-  <!-- Corrected Local Fonts Links -->
-  <link rel="preconnect" href="assets/fonts/inter.css">
-  <link rel="preconnect" href="assets/fonts/inter.css" crossorigin>
-  <link href="assets/fonts/inter.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Corrected Tailwind CSS Link -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class', // Enable class-based dark mode
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -34,11 +34,11 @@
     }
   </script>
 
-  <!-- Corrected Local Dependencies -->
-  <script src="assets/pdf.min.js"></script>
-  <script src="assets/jszip.min.js"></script>
-  <script src="assets/pdf-lib.min.js"></script>
-  <script src="assets/tesseract.min.js"></script>
+  <!-- External CDN Dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script src="https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
 
   <style>
     /* Custom Scrollbars */
@@ -56,59 +56,150 @@
 
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen p-4 md:p-8 transition-colors duration-200 dark:bg-oled-black dark:text-gray-100">
 
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto">
   <!-- Header & Dark Mode Toggle -->
   <header class="mb-10 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
     <div>
       <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight transition-colors">
-        PDF ⇄ Images with OCR
+        Ultimate PDF Toolkit
       </h1>
       <p class="text-gray-600 dark:text-gray-400 text-sm md:text-base max-w-2xl transition-colors">
         All processing happens locally in your browser. No files are uploaded to external servers.
-        Ensure a stable connection on initial load to fetch OCR language data.
       </p>
     </div>
     
     <button id="themeToggle" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-oled-card text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-oled-border shadow-sm hover:bg-gray-50 dark:hover:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium text-sm whitespace-nowrap">
-      <svg id="moonIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-      <svg id="sunIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+      <svg id="moonIcon" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+      <svg id="sunIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
       <span id="themeText">Enable Dark Mode</span>
     </button>
   </header>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-    <!-- Card 1: PDF → PNG + ZIP -->
+    <!-- Card 1: Split PDF -->
     <section class="bg-white dark:bg-oled-card rounded-2xl shadow-sm border border-gray-200 dark:border-oled-border overflow-hidden flex flex-col h-full transition-colors">
       <div class="p-6 border-b border-gray-100 dark:border-oled-border bg-gray-50/50 dark:bg-oled-header transition-colors">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
-          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-          PDF to PNG Extract
+          <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"></path></svg>
+          Split PDF
         </h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Convert each page of a PDF into a high‑res PNG image.</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Extract specific page ranges and download as a ZIP archive.</p>
       </div>
 
       <div class="p-6 flex-grow flex flex-col gap-5">
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select PDF File</label>
-            <input type="file" id="pdfInput" accept="application/pdf"
-              class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/40 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/60 transition-colors border border-gray-200 dark:border-oled-border rounded-lg bg-white dark:bg-oled-black" />
+            <div id="splitContainer" class="relative flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 dark:border-oled-border border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-oled-black hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors">
+              <input id="splitInput" type="file" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
+                <svg class="w-8 h-8 mb-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium text-center px-4 truncate w-full" id="splitFileName">PDF Document</p>
+              </div>
+            </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Render Scale (Quality)</label>
-            <input type="number" id="pdfScale" min="0.5" max="5" step="0.5" value="2"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-oled-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-oled-black dark:text-white transition-colors" />
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Higher values generate larger, crisper images but take longer.
-            </p>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Page Ranges</label>
+            <input type="text" id="splitRanges" placeholder="e.g. 1-2, 3, 4-6 (Leave empty for all pages)"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-oled-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-oled-black dark:text-white transition-colors" />
           </div>
         </div>
 
-        <button id="btnPdfToPng"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
-          Convert & Zip Pages
+        <button id="btnSplitPdf"
+          class="w-full mt-auto bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
+          Split & Zip Document
+        </button>
+
+        <div id="splitLog" class="log-container min-h-[100px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors" aria-live="polite">Waiting for input...</div>
+
+        <div id="splitDownload" class="empty:hidden pt-2 flex flex-col gap-2"></div>
+      </div>
+    </section>
+
+    <!-- Card 2: Merge PDFs -->
+    <section class="bg-white dark:bg-oled-card rounded-2xl shadow-sm border border-gray-200 dark:border-oled-border overflow-hidden flex flex-col h-full transition-colors">
+      <div class="p-6 border-b border-gray-100 dark:border-oled-border bg-gray-50/50 dark:bg-oled-header transition-colors">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+          Merge PDFs
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Combine multiple PDF files into a single document.</p>
+      </div>
+
+      <div class="p-6 flex-grow flex flex-col gap-5">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select PDF Files</label>
+            <div id="mergeContainer" class="relative flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 dark:border-oled-border border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-oled-black hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors">
+              <input id="mergeInput" type="file" accept="application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
+                <svg class="w-8 h-8 mb-2 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-amber-600 dark:text-amber-400 font-medium text-center px-4 truncate w-full" id="mergeFileName">Multiple PDFs</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="btnMergePdf"
+          class="w-full mt-auto bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
+          Merge PDFs
+        </button>
+
+        <div id="mergeLog" class="log-container min-h-[100px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors" aria-live="polite">Waiting for input...</div>
+
+        <div id="mergeDownload" class="empty:hidden pt-2"></div>
+      </div>
+    </section>
+
+    <!-- Card 3: PDF → Files -->
+    <section class="bg-white dark:bg-oled-card rounded-2xl shadow-sm border border-gray-200 dark:border-oled-border overflow-hidden flex flex-col h-full transition-colors">
+      <div class="p-6 border-b border-gray-100 dark:border-oled-border bg-gray-50/50 dark:bg-oled-header transition-colors">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          Convert PDF to Files
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Extract PDF into Images (PNG/JPG) or a Text File (.txt).</p>
+      </div>
+
+      <div class="p-6 flex-grow flex flex-col gap-5">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select PDF File</label>
+            <div id="pdfContainer" class="relative flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 dark:border-oled-border border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-oled-black hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors">
+              <input id="pdfInput" type="file" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
+                <svg class="w-8 h-8 mb-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-blue-600 dark:text-blue-400 font-medium text-center px-4 truncate w-full" id="pdfFileName">PDF Document</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Output Format</label>
+              <select id="pdfOutFormat"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-oled-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-oled-black dark:text-white transition-colors">
+                <option value="png">PNG Images (ZIP)</option>
+                <option value="jpeg">JPG Images (ZIP)</option>
+                <option value="txt">Text Extract (.txt)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image Render Scale</label>
+              <input type="number" id="pdfScale" min="0.5" max="5" step="0.5" value="2"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-oled-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-oled-black dark:text-white transition-colors" />
+            </div>
+          </div>
+        </div>
+
+        <button id="btnPdfToFiles"
+          class="w-full mt-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
+          Extract & Download
         </button>
 
         <div class="space-y-1">
@@ -121,30 +212,34 @@
           </div>
         </div>
 
-        <div id="pdfLog"
-          class="log-container flex-grow min-h-[150px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors"
-          aria-live="polite">Waiting for input...</div>
+        <div id="pdfLog" class="log-container min-h-[100px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors" aria-live="polite">Waiting for input...</div>
 
         <div id="pdfDownload" class="empty:hidden pt-2"></div>
       </div>
     </section>
 
-    <!-- Card 2: Images → Searchable PDF -->
+    <!-- Card 4: Files → PDF (Optional OCR) -->
     <section class="bg-white dark:bg-oled-card rounded-2xl shadow-sm border border-gray-200 dark:border-oled-border overflow-hidden flex flex-col h-full transition-colors">
       <div class="p-6 border-b border-gray-100 dark:border-oled-border bg-gray-50/50 dark:bg-oled-header transition-colors">
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
           <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-          Images to Searchable PDF
+          Convert Files to PDF
         </h2>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Combine images, run OCR, and output a selectable, searchable PDF.</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Combine Images & Text (.txt) into a PDF. Optional OCR.</p>
       </div>
 
       <div class="p-6 flex-grow flex flex-col gap-5">
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Image(s)</label>
-            <input type="file" id="imgInput" accept="image/*" multiple
-              class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-900/40 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-900/60 transition-colors border border-gray-200 dark:border-oled-border rounded-lg bg-white dark:bg-oled-black" />
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Files (Images or .txt)</label>
+            <div id="imgContainer" class="relative flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 dark:border-oled-border border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-oled-black hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors">
+              <input id="imgInput" type="file" accept="image/*,text/plain" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
+                <svg class="w-8 h-8 mb-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium text-center px-4 truncate w-full" id="imgFileName">Images or TXT files</p>
+              </div>
+            </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -165,11 +260,16 @@
                 placeholder="e.g. eng+spa" />
             </div>
           </div>
+          
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="enableOcr" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
+            <label for="enableOcr" class="text-sm font-medium text-gray-700 dark:text-gray-300">Enable OCR (Extract searchable text from images)</label>
+          </div>
         </div>
 
-        <button id="btnImagesToPdf"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
-          Merge & OCR Images
+        <button id="btnFilesToPdf"
+          class="w-full mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
+          Build PDF Document
         </button>
 
         <div class="space-y-1">
@@ -182,13 +282,67 @@
           </div>
         </div>
 
-        <div id="ocrLog"
-          class="log-container flex-grow min-h-[150px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors"
-          aria-live="polite">Waiting for input...</div>
+        <div id="ocrLog" class="log-container min-h-[100px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors" aria-live="polite">Waiting for input...</div>
 
         <div id="ocrDownload" class="empty:hidden pt-2"></div>
       </div>
     </section>
+
+    <!-- Card 5: Rotate PDF -->
+    <section class="bg-white dark:bg-oled-card rounded-2xl shadow-sm border border-gray-200 dark:border-oled-border overflow-hidden flex flex-col h-full transition-colors lg:col-span-2 md:w-1/2 md:mx-auto">
+      <div class="p-6 border-b border-gray-100 dark:border-oled-border bg-gray-50/50 dark:bg-oled-header transition-colors">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+          <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          Batch Rotate PDF
+        </h2>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Change document orientation by rotating pages 90° or 180°. Select multiple files to process them in batch.</p>
+      </div>
+
+      <div class="p-6 flex-grow flex flex-col gap-5">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select PDF File(s)</label>
+            <div id="rotateContainer" class="relative flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 dark:border-oled-border border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-oled-black hover:bg-gray-100 dark:hover:bg-neutral-900 transition-colors">
+              <input id="rotateInput" type="file" accept="application/pdf" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
+                <svg class="w-8 h-8 mb-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                <p class="mb-1 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                <p class="text-xs text-purple-600 dark:text-purple-400 font-medium text-center px-4 truncate w-full" id="rotateFileName">1 or more PDFs</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Degree</label>
+              <select id="rotateDegree"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-oled-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-oled-black dark:text-white transition-colors">
+                <option value="90">90°</option>
+                <option value="180">180°</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Orientation</label>
+              <select id="rotateOrientation"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-oled-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-oled-black dark:text-white transition-colors">
+                <option value="horizontal">Horizontal</option>
+                <option value="vertical">Vertical</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button id="btnRotatePdf"
+          class="w-full mt-auto bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-oled-black disabled:opacity-50 disabled:cursor-not-allowed">
+          Rotate Document(s)
+        </button>
+
+        <div id="rotateLog" class="log-container min-h-[100px] bg-gray-50 dark:bg-[#111] border border-gray-200 dark:border-oled-border rounded-lg p-3 text-xs font-mono text-gray-600 dark:text-gray-300 whitespace-pre-wrap overflow-y-auto transition-colors" aria-live="polite">Waiting for input...</div>
+
+        <div id="rotateDownload" class="empty:hidden pt-2"></div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -197,7 +351,6 @@
   const themeToggleBtn = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
   
-  // Check local storage or system preference
   if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     document.documentElement.classList.add('dark');
     themeText.textContent = "Disable Dark Mode";
@@ -216,7 +369,44 @@
     }
   });
 
-  // -- PDF.js configuration --
+  // -- Setup Drag and Drop Zones --
+  function initDropzone(inputId, textId, defaultText, activeClasses) {
+    const input = document.getElementById(inputId);
+    const text = document.getElementById(textId);
+    const container = input.parentElement;
+
+    input.addEventListener('change', () => {
+      if (input.files.length === 0) {
+        text.textContent = defaultText;
+      } else if (input.files.length === 1) {
+        text.textContent = input.files[0].name;
+      } else {
+        text.textContent = `${input.files.length} files selected`;
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach(evt => {
+      input.addEventListener(evt, (e) => {
+        container.classList.add(...activeClasses);
+        container.classList.remove('border-gray-300', 'dark:border-oled-border', 'bg-gray-50', 'dark:bg-oled-black');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+      input.addEventListener(evt, (e) => {
+        container.classList.remove(...activeClasses);
+        container.classList.add('border-gray-300', 'dark:border-oled-border', 'bg-gray-50', 'dark:bg-oled-black');
+      });
+    });
+  }
+
+  initDropzone('splitInput', 'splitFileName', 'PDF Document', ['border-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-900/20']);
+  initDropzone('mergeInput', 'mergeFileName', 'Multiple PDFs', ['border-amber-500', 'bg-amber-50', 'dark:bg-amber-900/20']);
+  initDropzone('pdfInput', 'pdfFileName', 'PDF Document', ['border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20']);
+  initDropzone('imgInput', 'imgFileName', 'Images or TXT files', ['border-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-900/20']);
+  initDropzone('rotateInput', 'rotateFileName', '1 or more PDFs', ['border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20']);
+
+  // -- PDF.js configuration (From CDN) --
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   // -- Helper functions --
@@ -237,7 +427,7 @@
     textEl.textContent = `${Math.round(val)}%`;
   }
   
-  function createDownloadButton(blob, filename, holder) {
+  function createDownloadButton(blob, filename, holder, clearBefore = true) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -248,11 +438,141 @@
       "focus:ring-2 focus:ring-green-500 focus:ring-offset-1 dark:focus:ring-offset-oled-black mt-2";
     a.innerHTML =
       `<svg class="w-4 h-4 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Download ${filename}`;
-    holder.innerHTML = "";
+    
+    if (clearBefore) holder.innerHTML = "";
     holder.appendChild(a);
   }
 
-  /* Image conversion to JPEG buffer to handle various browser image formats safely */
+  /* --- Tool 1: Split PDF --- */
+  async function doSplit() {
+    const fileInput = document.getElementById("splitInput");
+    const logEl = document.getElementById("splitLog");
+    const dlHolder = document.getElementById("splitDownload");
+    const btn = document.getElementById("btnSplitPdf");
+
+    if (!fileInput.files.length) {
+      log(logEl, "Please select a PDF first.", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    clearLog(logEl);
+    dlHolder.innerHTML = "";
+    
+    try {
+      const file = fileInput.files[0];
+      const originalName = file.name.replace(/\.[^.]+$/, "") || "document";
+      
+      log(logEl, `Loading PDF: ${file.name}...`);
+      const rangesRaw = document.getElementById("splitRanges").value.trim();
+      const arr = new Uint8Array(await file.arrayBuffer());
+      const src = await PDFLib.PDFDocument.load(arr);
+      const pageCount = src.getPageCount();
+
+      let ranges = [];
+      if (!rangesRaw) {
+        for (let i = 1; i <= pageCount; i++) ranges.push([i, i]);
+      } else {
+        rangesRaw.split(",").forEach(r => {
+          let parts = r.split("-").map(n => parseInt(n.trim()));
+          let a = parts[0];
+          let b = parts[1] ? parts[1] : a;
+          if (!isNaN(a) && !isNaN(b)) {
+            ranges.push([a, b]);
+          }
+        });
+      }
+
+      log(logEl, `Found ${ranges.length} range(s) to process.`);
+      
+      const zip = new JSZip();
+      let validRangesProcessed = 0;
+
+      for (let [start, end] of ranges) {
+        if (start < 1) start = 1;
+        if (end > pageCount) end = pageCount;
+        if (start > end) continue;
+
+        log(logEl, `Extracting pages ${start} to ${end}...`);
+        const outPdf = await PDFLib.PDFDocument.create();
+        const indices = [];
+        for (let p = start; p <= end; p++) indices.push(p - 1);
+
+        const copied = await outPdf.copyPages(src, indices);
+        copied.forEach(p => outPdf.addPage(p));
+
+        const bytes = await outPdf.save();
+        const filename = `${originalName}_${start}-${end}.pdf`;
+        zip.file(filename, bytes);
+        validRangesProcessed++;
+      }
+
+      if (validRangesProcessed > 0) {
+        log(logEl, "Compressing split files into ZIP archive...");
+        const zipBlob = await zip.generateAsync({
+          type: "blob",
+          compression: "DEFLATE",
+          compressionOptions: { level: 6 }
+        });
+        
+        createDownloadButton(zipBlob, `${originalName}_splits.zip`, dlHolder, true);
+        log(logEl, "Splitting and zipping complete!", "success");
+      } else {
+        log(logEl, "No valid page ranges found to split.", "error");
+      }
+
+    } catch (err) {
+      log(logEl, `Error: ${err.message}`, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  /* --- Tool 2: Merge PDFs --- */
+  async function doMerge() {
+    const fileInput = document.getElementById("mergeInput");
+    const logEl = document.getElementById("mergeLog");
+    const dlHolder = document.getElementById("mergeDownload");
+    const btn = document.getElementById("btnMergePdf");
+
+    if (!fileInput.files.length) {
+      log(logEl, "Please select at least one PDF.", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    clearLog(logEl);
+    dlHolder.innerHTML = "";
+
+    try {
+      log(logEl, "Initializing empty document...");
+      const outPdf = await PDFLib.PDFDocument.create();
+
+      for (let i = 0; i < fileInput.files.length; i++) {
+        const file = fileInput.files[i];
+        log(logEl, `Merging file ${i+1}/${fileInput.files.length}: ${file.name}...`);
+        const arr = new Uint8Array(await file.arrayBuffer());
+        const doc = await PDFLib.PDFDocument.load(arr);
+        
+        const indices = Array.from({ length: doc.getPageCount() }, (_, i) => i);
+        const pages = await outPdf.copyPages(doc, indices);
+        pages.forEach(p => outPdf.addPage(p));
+      }
+
+      log(logEl, "Finalizing merged document...");
+      const bytes = await outPdf.save();
+      const blob = new Blob([bytes], { type: "application/pdf" });
+      
+      createDownloadButton(blob, "merged_document.pdf", dlHolder);
+      log(logEl, "Merge complete!", "success");
+    } catch (err) {
+      log(logEl, `Error: ${err.message}`, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  /* Image conversion handler */
   function processImageFileToJpegBuffer(file) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -275,11 +595,12 @@
     });
   }
 
-  /* Feature 1: PDF → PNG ZIP */
-  async function pdfToPngZip() {
+  /* --- Tool 3: PDF → Files (PNG, JPG, TXT) --- */
+  async function pdfToFiles() {
     const fileInput = document.getElementById('pdfInput');
+    const outFormat = document.getElementById('pdfOutFormat').value;
     const scaleInput = document.getElementById('pdfScale');
-    const btn = document.getElementById('btnPdfToPng');
+    const btn = document.getElementById('btnPdfToFiles');
     const logEl = document.getElementById('pdfLog');
     const progBar = document.getElementById('pdfProgressBar');
     const progText = document.getElementById('pdfProgressText');
@@ -292,6 +613,7 @@
 
     const file = fileInput.files[0];
     const scale = parseFloat(scaleInput.value) || 2;
+    const outName = file.name.replace(/\.[^.]+$/, "") || "document";
     
     btn.disabled = true;
     clearLog(logEl);
@@ -302,45 +624,61 @@
       log(logEl, `Reading PDF: ${file.name}...`);
       const arrayBuf = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
-
       log(logEl, `PDF loaded successfully. Pages: ${pdf.numPages}`);
-      const zip = new JSZip();
 
-      for (let p = 1; p <= pdf.numPages; p++) {
-        log(logEl, `Rendering page ${p} of ${pdf.numPages}...`);
-        const page = await pdf.getPage(p);
-        const viewport = page.getViewport({ scale });
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d", { alpha: false });
-        
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+      if (outFormat === 'txt') {
+        // Text Extraction Mode
+        let fullText = "";
+        for (let p = 1; p <= pdf.numPages; p++) {
+          log(logEl, `Extracting text from page ${p}...`);
+          const page = await pdf.getPage(p);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+          fullText += `--- Page ${p} ---\n${pageText}\n\n`;
+          updateProgress(progBar, progText, (p / pdf.numPages) * 100);
+        }
+        log(logEl, "Text extraction complete!", "success");
+        const blob = new Blob([fullText], {type: "text/plain"});
+        createDownloadButton(blob, `${outName}_extract.txt`, dlHolder);
+      } else {
+        // Image Extraction Mode (PNG/JPG ZIP)
+        const zip = new JSZip();
+        const mimeType = outFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
+        const ext = outFormat === 'jpeg' ? 'jpg' : 'png';
 
-        await page.render({ canvasContext: ctx, viewport }).promise;
+        for (let p = 1; p <= pdf.numPages; p++) {
+          log(logEl, `Rendering page ${p} of ${pdf.numPages} as ${ext.toUpperCase()}...`);
+          const page = await pdf.getPage(p);
+          const viewport = page.getViewport({ scale });
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d", { alpha: false });
+          
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
 
-        const blob = await new Promise(res => canvas.toBlob(res, "image/png", 1.0));
-        const buf = await blob.arrayBuffer();
+          await page.render({ canvasContext: ctx, viewport }).promise;
 
-        const padLen = String(pdf.numPages).length;
-        const name = `page-${String(p).padStart(Math.max(padLen, 3), "0")}.png`;
-        zip.file(name, buf);
+          const blob = await new Promise(res => canvas.toBlob(res, mimeType, 0.95));
+          const buf = await blob.arrayBuffer();
 
-        updateProgress(progBar, progText, (p / pdf.numPages) * 90);
+          const padLen = String(pdf.numPages).length;
+          const name = `page-${String(p).padStart(Math.max(padLen, 3), "0")}.${ext}`;
+          zip.file(name, buf);
+
+          updateProgress(progBar, progText, (p / pdf.numPages) * 90);
+        }
+
+        log(logEl, "Compressing and zipping generated images...");
+        const zipBlob = await zip.generateAsync({
+          type: "blob",
+          compression: "DEFLATE",
+          compressionOptions: { level: 6 }
+        });
+
+        updateProgress(progBar, progText, 100);
+        log(logEl, "ZIP archive created successfully!", "success");
+        createDownloadButton(zipBlob, `${outName}_pages.zip`, dlHolder);
       }
-
-      log(logEl, "Compressing and zipping generated images...");
-      const zipBlob = await zip.generateAsync({
-        type: "blob",
-        compression: "DEFLATE",
-        compressionOptions: { level: 6 }
-      });
-
-      updateProgress(progBar, progText, 100);
-      log(logEl, "ZIP archive created successfully!", "success");
-
-      const outName = (file.name.replace(/\.[^.]+$/, "") || "document") + "_pages.zip";
-      createDownloadButton(zipBlob, outName, dlHolder);
-
     } catch (err) {
       console.error(err);
       log(logEl, `Error: ${err.message}`, "error");
@@ -349,12 +687,13 @@
     }
   }
 
-  /* Feature 2: Images → Searchable PDF (OCR) */
-  async function imagesToSearchablePdf() {
+  /* --- Tool 4: Files → PDF (Images & Text, Optional OCR) --- */
+  async function filesToSearchablePdf() {
     const fileInput = document.getElementById('imgInput');
     const pageSizeSelect = document.getElementById('pageSize');
     const ocrLangInput = document.getElementById('ocrLang');
-    const btn = document.getElementById('btnImagesToPdf');
+    const enableOcr = document.getElementById('enableOcr').checked;
+    const btn = document.getElementById('btnFilesToPdf');
     const logEl = document.getElementById('ocrLog');
     const progBar = document.getElementById('ocrProgressBar');
     const progText = document.getElementById('ocrProgressText');
@@ -362,7 +701,7 @@
     const dlHolder = document.getElementById('ocrDownload');
 
     if (!fileInput.files.length) {
-      log(logEl, "Please select at least one image.", "error");
+      log(logEl, "Please select at least one file.", "error");
       return;
     }
 
@@ -374,6 +713,7 @@
     const files = Array.from(fileInput.files);
     const lang = ocrLangInput.value.trim() || 'eng';
     const chosenPageSize = pageSizeSelect.value;
+    const hasImages = files.some(f => f.type.startsWith('image/'));
 
     try {
       log(logEl, "Initializing empty PDF document...");
@@ -381,80 +721,103 @@
       const pdfDoc = await PDFDocument.create();
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-      log(logEl, `Starting Tesseract.js worker (Language: ${lang})...`);
-
+      let worker = null;
       let currentFileIndex = 0;
 
-      const worker = await Tesseract.createWorker(lang, 1, {
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            const progress = ((currentFileIndex + m.progress) / files.length) * 100;
-            updateProgress(progBar, progText, progress);
-            statusText.textContent = `OCR Image ${currentFileIndex + 1}/${files.length}`;
+      if (enableOcr && hasImages) {
+        log(logEl, `Starting Tesseract.js worker (Language: ${lang})...`);
+        worker = await Tesseract.createWorker(lang, 1, {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              const progress = ((currentFileIndex + m.progress) / files.length) * 100;
+              updateProgress(progBar, progText, progress);
+              statusText.textContent = `OCR Image ${currentFileIndex + 1}/${files.length}`;
+            }
           }
-        }
-      });
-
-      log(logEl, "OCR Worker ready.");
+        });
+        log(logEl, "OCR Worker ready.");
+      } else if (!enableOcr && hasImages) {
+        log(logEl, "OCR is disabled. Images will be merged without searchable text.");
+      }
 
       for (let i = 0; i < files.length; i++) {
         currentFileIndex = i;
         const file = files[i];
-
         log(logEl, `Processing file ${i+1}/${files.length}: ${file.name}`);
 
-        const { buffer: imgBuffer, width: imgW, height: imgH } =
-          await processImageFileToJpegBuffer(file);
+        if (file.type === 'text/plain') {
+          // --- Process Text Document ---
+          let pageW = 612, pageH = 792; // US Letter default for text
+          if (chosenPageSize === 'A4') { pageW = 595.28; pageH = 841.89; }
+          
+          const text = await file.text();
+          const lines = text.split('\n');
+          
+          let page = pdfDoc.addPage([pageW, pageH]);
+          let cursorY = pageH - 50;
+          
+          for(let line of lines) {
+            // Basic pagination: create new page if we hit the bottom
+            if (cursorY < 50) {
+                page = pdfDoc.addPage([pageW, pageH]);
+                cursorY = pageH - 50;
+            }
+            // Strip characters unsupported by standard Helvetica to prevent rendering crashes
+            const cleanLine = line.replace(/[^\x20-\x7E]/g, ""); 
+            page.drawText(cleanLine, { x: 50, y: cursorY, size: 12, font: helveticaFont, color: rgb(0,0,0) });
+            cursorY -= 16; // Line height step
+          }
+          updateProgress(progBar, progText, ((i + 1) / files.length) * 100);
 
-        const pdfImage = await pdfDoc.embedJpg(imgBuffer);
+        } else if (file.type.startsWith('image/')) {
+          // --- Process Image Document ---
+          const { buffer: imgBuffer, width: imgW, height: imgH } = await processImageFileToJpegBuffer(file);
+          const pdfImage = await pdfDoc.embedJpg(imgBuffer);
 
-        let pageW, pageH;
-        if (chosenPageSize === 'LETTER') { pageW = 612; pageH = 792; }
-        else if (chosenPageSize === 'A4') { pageW = 595.28; pageH = 841.89; }
-        else { pageW = imgW; pageH = imgH; }
+          let pageW, pageH;
+          if (chosenPageSize === 'LETTER') { pageW = 612; pageH = 792; }
+          else if (chosenPageSize === 'A4') { pageW = 595.28; pageH = 841.89; }
+          else { pageW = imgW; pageH = imgH; }
 
-        const page = pdfDoc.addPage([pageW, pageH]);
+          const page = pdfDoc.addPage([pageW, pageH]);
+          const scaleFactor = Math.min(pageW / imgW, pageH / imgH);
+          const drawW = imgW * scaleFactor;
+          const drawH = imgH * scaleFactor;
+          const drawX = (pageW - drawW) / 2;
+          const drawY = (pageH - drawH) / 2;
 
-        const scaleFactor = Math.min(pageW / imgW, pageH / imgH);
-        const drawW = imgW * scaleFactor;
-        const drawH = imgH * scaleFactor;
-        const drawX = (pageW - drawW) / 2;
-        const drawY = (pageH - drawH) / 2;
+          page.drawImage(pdfImage, { x: drawX, y: drawY, width: drawW, height: drawH });
 
-        page.drawImage(pdfImage, {
-          x: drawX,
-          y: drawY,
-          width: drawW,
-          height: drawH
-        });
+          if (worker && enableOcr) {
+            log(logEl, `Running OCR recognition on ${file.name}...`);
+            const { data: { words } } = await worker.recognize(file);
 
-        log(logEl, `Running OCR recognition on ${file.name}...`);
-        const { data: { words } } = await worker.recognize(file);
+            for (const word of words) {
+              const { text, bbox } = word;
+              const bboxW = bbox.x1 - bbox.x0;
+              const bboxH = bbox.y1 - bbox.y0;
 
-        // Map recognized text as invisible font overlays on the PDF layer
-        for (const word of words) {
-          const { text, bbox } = word;
-          const bboxW = bbox.x1 - bbox.x0;
-          const bboxH = bbox.y1 - bbox.y0;
+              const mappedX = drawX + (bbox.x0 * scaleFactor);
+              const mappedY = drawY + drawH - (bbox.y1 * scaleFactor);
+              const mappedFontSize = bboxH * scaleFactor;
 
-          const mappedX = drawX + (bbox.x0 * scaleFactor);
-          const mappedY = drawY + drawH - (bbox.y1 * scaleFactor);
-          const mappedFontSize = bboxH * scaleFactor;
-
-          page.drawText(text, {
-            x: mappedX,
-            y: mappedY,
-            size: mappedFontSize,
-            font: helveticaFont,
-            color: rgb(0, 0, 0),
-            opacity: 0 // Keep invisible, solely for text selection/searching
-          });
+              page.drawText(text, {
+                x: mappedX,
+                y: mappedY,
+                size: mappedFontSize,
+                font: helveticaFont,
+                color: rgb(0, 0, 0),
+                opacity: 0 // Invisible layer for searchability
+              });
+            }
+          } else {
+             updateProgress(progBar, progText, ((i + 1) / files.length) * 100);
+          }
         }
-
         log(logEl, `Finished processing ${file.name}`);
       }
 
-      await worker.terminate();
+      if (worker) await worker.terminate();
       statusText.textContent = "Finalizing PDF Document...";
       updateProgress(progBar, progText, 100);
 
@@ -465,7 +828,7 @@
       log(logEl, "PDF created successfully!", "success");
 
       const firstFileName = files[0].name.replace(/\.[^.]+$/, "");
-      const outName = files.length > 1 ? "searchable_document.pdf" : `${firstFileName}_ocr.pdf`;
+      const outName = files.length > 1 ? "compiled_document.pdf" : `${firstFileName}_converted.pdf`;
 
       createDownloadButton(pdfBlob, outName, dlHolder);
       statusText.textContent = "Complete";
@@ -479,9 +842,91 @@
     }
   }
 
+  /* --- Tool 5: Batch Rotate PDF --- */
+  async function doRotate() {
+    const fileInput = document.getElementById("rotateInput");
+    const degreeSelect = document.getElementById("rotateDegree");
+    const orientationSelect = document.getElementById("rotateOrientation");
+    const logEl = document.getElementById("rotateLog");
+    const dlHolder = document.getElementById("rotateDownload");
+    const btn = document.getElementById("btnRotatePdf");
+
+    if (!fileInput.files.length) {
+      log(logEl, "Please select at least one PDF first.", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    clearLog(logEl);
+    dlHolder.innerHTML = "";
+
+    try {
+      const deg = parseInt(degreeSelect.value);
+      const ori = orientationSelect.value;
+      const isMultiple = fileInput.files.length > 1;
+      
+      let finalRotation = 0;
+      if (deg === 180) {
+          finalRotation = 180;
+      } else if (deg === 90) {
+          finalRotation = (ori === 'horizontal') ? 90 : 270;
+      }
+      
+      const zip = new JSZip();
+      let filesProcessed = 0;
+
+      for (let i = 0; i < fileInput.files.length; i++) {
+        const file = fileInput.files[i];
+        log(logEl, `Processing file ${i+1}/${fileInput.files.length}: ${file.name}...`);
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+        
+        const pages = pdfDoc.getPages();
+        pages.forEach(page => {
+            const currentRotation = page.getRotation().angle;
+            page.setRotation(PDFLib.degrees((currentRotation + finalRotation) % 360));
+        });
+
+        const newPdfBytes = await pdfDoc.save();
+        const originalName = file.name.replace(/\.[^.]+$/, "") || "document";
+        
+        if (isMultiple) {
+          zip.file(`${originalName}_rotated.pdf`, newPdfBytes);
+          filesProcessed++;
+        } else {
+          const blob = new Blob([newPdfBytes], { type: "application/pdf" });
+          createDownloadButton(blob, `${originalName}_rotated.pdf`, dlHolder);
+          log(logEl, "Rotation complete!", "success");
+          return; 
+        }
+      }
+
+      if (isMultiple && filesProcessed > 0) {
+        log(logEl, "Compressing batch rotated files into ZIP archive...");
+        const zipBlob = await zip.generateAsync({
+          type: "blob",
+          compression: "DEFLATE",
+          compressionOptions: { level: 6 }
+        });
+        
+        createDownloadButton(zipBlob, `batch_rotated_pdfs.zip`, dlHolder);
+        log(logEl, "Batch rotation complete!", "success");
+      }
+
+    } catch (err) {
+      log(logEl, `Error: ${err.message}`, "error");
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
   // Attach event listeners
-  document.getElementById('btnPdfToPng').addEventListener('click', pdfToPngZip);
-  document.getElementById('btnImagesToPdf').addEventListener('click', imagesToSearchablePdf);
+  document.getElementById('btnSplitPdf').addEventListener('click', doSplit);
+  document.getElementById('btnMergePdf').addEventListener('click', doMerge);
+  document.getElementById('btnPdfToFiles').addEventListener('click', pdfToFiles);
+  document.getElementById('btnFilesToPdf').addEventListener('click', filesToSearchablePdf);
+  document.getElementById('btnRotatePdf').addEventListener('click', doRotate);
 </script>
 
 </body>
